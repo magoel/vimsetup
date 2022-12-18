@@ -1,0 +1,110 @@
+set nocompatible              " be iMproved, required
+filetype off                  " required
+let s:curFilePath = $MYVIMRC
+let s:curFileDir = join(split(s:curFilePath,"/",1)[0:-2],"/")
+
+
+" set the runtime path to include Vundle and initialize
+let &rtp =  s:curFileDir . "/bundle/Vundle.vim," . &rtp
+call vundle#begin(s:curFileDir . "/bundle")
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+" The following are examples of different formats supported.
+" Keep Plugin commands between vundle#begin/end.
+" plugin on GitHub repo
+
+"Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-sensible'
+Plugin 'junegunn/vim-easy-align'
+"Plugin 'tmhedberg/SimpylFold'              
+Plugin 'vim-scripts/indentpython.vim'       
+"Plugin 'jnurmine/Zenburn'                   
+"Plugin 'altercation/vim-colors-solarized'   
+"Plugin 'scrooloose/syntastic'               
+Plugin 'jpalardy/vim-slime.git'             
+"Plugin 'vim-scripts/Conque-GDB'             
+"Plugin 'tarruda/vim-conque-repl'  
+"Plugin 'vhda/verilog_systemverilog.vim'
+Plugin 'chiel92/vim-autoformat'
+"Plugin 'ycm-core/YouCompleteMe'
+"Plugin 'AsyncCommand'
+"Plugin 'inkarkat/vim-mark'
+Plugin 'tomtom/tcomment_vim'
+Plugin 'ivechan/gtags.vim'
+Plugin 'bfrg/vim-cpp-modern'
+
+" Install vim-maktaba plugin for plugin developers - used in foldcol                                       
+"Plugin 'google/vim-maktaba'                                                                                
+" Install foldcol - folding columns using <ctrl-v> visual mark, then
+" :VFoldCol                           
+"Plugin 'paulhybryant/foldcol'  
+
+" plugin from http://vim-scripts.org/vim/scripts.html
+"Plugin 'L9'
+" Git plugin not hosted on GitHub
+"Plugin 'git://git.wincent.com/command-t.git'
+" git repos on your local machine (i.e. when working on your own plugin)
+"Plugin 'file:///home/gmarik/path/to/plugin'
+" The sparkup vim script is in a subdirectory of this repo called vim.
+" Pass the path to set the runtimepath properly.
+"Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+" Install L9 and avoid a Naming conflict if you've already installed a
+" different version somewhere else.
+"Plugin 'ascenator/L9', {'name': 'newL9'}
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+
+"install or initialize gtags-plugin
+let &rtp =  s:curFileDir . "/bundle/gtags," . &rtp
+
+
+
+set vb       " turn on visual bell
+set t_vb=    " turn of sound bell
+colorscheme desert
+" To use the default key/mouse mapping:
+"	let GtagsCscope_Auto_Map = 1
+" To ignore letter case when searching:
+"	let GtagsCscope_Ignore_Case = 1
+" To use absolute path name:
+"       let GtagsCscope_Absolute_Path = 1
+" To deterring interruption:
+	let GtagsCscope_Keep_Alive = 1
+" If you hope auto loading:
+	let GtagsCscope_Auto_Load = 1
+" To use 'vim -t ', ':tag' and '<C-]>'
+	set cscopetag
+"
+
+set directory="~/vim-swap//"  "location to store vim-swap files
+set diffopt=filler,iwhite,vertical
+set tabstop=4
+set shiftwidth=4
+set listchars=tab:\|\  
+set list
+set hlsearch
+set incsearch
+set number
+set ignorecase
+
+xnoremap ga :EasyAlign
+nnoremap ga :EasyAlign
+au BufNewFile,BufRead *.cpp set syntax=cpp11
+
+"runtime ftplugin/man.vim
+"set keywordprg=:Man
+"let g:ycm_auto_trigger = 1
