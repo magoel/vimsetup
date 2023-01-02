@@ -1,5 +1,11 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
+
+let mapleader = "-"
+let maplocalleader = "\\"
+:nnoremap <leader>ev :vertical topleft split $MYVIMRC<cr>
+:nnoremap <leader>sv :source $MYVIMRC<cr>
+
 let s:curFilePath = $MYVIMRC
 let s:curFileDir = join(split(s:curFilePath,"/",1)[0:-2],"/")
 let s:vim_personal_extra_path = s:curFileDir . "/bundle/vim-personal-extra"
@@ -17,14 +23,14 @@ Plugin 'VundleVim/Vundle.vim'
 "Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-sensible'
 Plugin 'junegunn/vim-easy-align'
-"Plugin 'tmhedberg/SimpylFold'              
-Plugin 'vim-scripts/indentpython.vim'       
-"Plugin 'jnurmine/Zenburn'                   
-"Plugin 'altercation/vim-colors-solarized'   
-"Plugin 'scrooloose/syntastic'               
-Plugin 'jpalardy/vim-slime.git'             
-"Plugin 'vim-scripts/Conque-GDB'             
-"Plugin 'tarruda/vim-conque-repl'  
+"Plugin 'tmhedberg/SimpylFold'
+Plugin 'vim-scripts/indentpython.vim'
+"Plugin 'jnurmine/Zenburn'
+"Plugin 'altercation/vim-colors-solarized'
+"Plugin 'scrooloose/syntastic'
+Plugin 'jpalardy/vim-slime.git'
+"Plugin 'vim-scripts/Conque-GDB'
+"Plugin 'tarruda/vim-conque-repl'
 "Plugin 'vhda/verilog_systemverilog.vim'
 Plugin 'chiel92/vim-autoformat'
 "Plugin 'ycm-core/YouCompleteMe'
@@ -36,11 +42,11 @@ Plugin 'bfrg/vim-cpp-modern'
 let s:var = "file://" . s:vim_personal_extra_path
 call vundle#config#bundle(s:var)
 
-" Install vim-maktaba plugin for plugin developers - used in foldcol                                       
-"Plugin 'google/vim-maktaba'                                                                                
+" Install vim-maktaba plugin for plugin developers - used in foldcol
+"Plugin 'google/vim-maktaba'
 " Install foldcol - folding columns using <ctrl-v> visual mark, then
-" :VFoldCol                           
-"Plugin 'paulhybryant/foldcol'  
+" :VFoldCol
+"Plugin 'paulhybryant/foldcol'
 
 " plugin from http://vim-scripts.org/vim/scripts.html
 "Plugin 'L9'
@@ -96,12 +102,11 @@ set directory="~/vim-swap//"  "location to store vim-swap files
 set diffopt=filler,iwhite,vertical
 set tabstop=4
 set shiftwidth=4
-set listchars=tab:\|\  
-set list
 set hlsearch
 set incsearch
 set number
 set ignorecase
+set nolist
 
 xnoremap ga :EasyAlign
 nnoremap ga :EasyAlign
