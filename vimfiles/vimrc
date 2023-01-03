@@ -115,3 +115,4 @@ nnoremap ga :EasyAlign
 "runtime ftplugin/man.vim
 "set keywordprg=:Man
 "let g:ycm_auto_trigger = 1
+

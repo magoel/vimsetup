@@ -1,5 +1,4 @@
 "define visual mapping to add function/class-header
-"define visual mapping to add if (change-gate)
 
 
 let g:CppHeaderAuthorName =  "magoel"
@@ -15,7 +14,7 @@ function! s:GenHeader(construct, name)
 
 	let l:saved_unnamed_register = @@
 	normal! `<v`>y
-	let l:line = line(".") - 1 "line above cursor
+	let l:line = line("'<") - 1 "line above selected
 	let l:header = []
 	let l:header += ["/*-----------------------------------------------------------------------------"]
 	let l:header += ["	%%" . a:construct . ": " . @@]
