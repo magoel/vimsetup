@@ -16,7 +16,8 @@ setlocal ignorecase
 
 "mappings
 nnoremap <buffer> <localleader>ev   :vertical topleft split <C-R>=<SID>ScriptPath()<cr><cr>
-nnoremap <buffer> <localleader>gu   :call InlineCommand("uuidgen")<cr>
+nnoremap <buffer> <localleader>sv   :source <C-R>=<SID>ScriptPath()<cr><cr>
+nnoremap <buffer> <localleader>uid   :call mylib#InlineCommand("uuidgen")<cr>
 
 augroup CppMain
 	au!
