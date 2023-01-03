@@ -6,8 +6,11 @@ let maplocalleader = "\\"
 :nnoremap <leader>ev :vertical topleft split $MYVIMRC<cr>
 :nnoremap <leader>sv :source $MYVIMRC<cr>
 
-let s:curFilePath = $MYVIMRC
-let s:curFileDir = join(split(s:curFilePath,"/",1)[0:-2],"/")
+let s:filename=expand('<sfile>', ':p')
+function! s:ScriptPath()
+	return s:filename
+endfunction
+let s:curFileDir = fnamemodify(s:ScriptPath(),":p:h")
 let s:vim_personal_extra_path = s:curFileDir . "/bundle/vim-personal-extra"
 
 " set the runtime path to include Vundle and initialize
