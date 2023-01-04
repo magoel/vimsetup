@@ -19,8 +19,15 @@ setlocal cscopetag
 setlocal switchbuf=useopen
 let GtagsCscope_Ignore_Case = 1
 let GtagsCscope_Keep_Alive = 1
-let g:Gtags_No_Auto_Jump = 1
+let g:Gtags_No_Auto_Jump = 0
 let GtagsCscope_Auto_Map = 0
+
+" if executable('ctags-exuberant')
+" 	" On Debian Linux, exuberant ctags is installed
+" 	" as exuberant-ctags
+" 	let Tlist_Ctags_Cmd = 'ctags-exuberant'
+" endif
+
 "Load Gtags db
 GtagsCscope
 
@@ -38,14 +45,15 @@ nnoremap <buffer> <localleader>ct :cs find t <C-R>=expand("<cword>")<CR><CR>
 nnoremap <buffer> <localleader>ce :cs find e <C-R>=expand("<cword>")<CR><CR>
 nnoremap <buffer> <localleader>cf :cs find f <C-R>=expand("<cfile>")<CR><CR>
 nnoremap <buffer> <localleader>ci :cs find i <C-R>=expand("<cfile>")<CR><CR>
-nnoremap <buffer> <localleader>o  :Gtas -Pi
+nnoremap <buffer> <localleader>o  :Gtags -Pi  
+nnoremap <buffer> <localleader>d  :Gtags -di  
 nnoremap <buffer> <localleader>s :Gtags -f %<cr>
 
 
 augroup CppMain
 	au!
 	"Remove trailing white spaces before writing files
-	autocmd  BufWritePre * RemoveTrailingSpaces
+	autocmd  BufWritePre <buffer> RemoveTrailingSpaces
 augroup END
 
 
