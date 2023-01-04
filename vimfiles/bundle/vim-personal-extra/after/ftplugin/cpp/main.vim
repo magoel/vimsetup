@@ -45,8 +45,8 @@ nnoremap <buffer> <localleader>ct :cs find t <C-R>=expand("<cword>")<CR><CR>
 nnoremap <buffer> <localleader>ce :cs find e <C-R>=expand("<cword>")<CR><CR>
 nnoremap <buffer> <localleader>cf :cs find f <C-R>=expand("<cfile>")<CR><CR>
 nnoremap <buffer> <localleader>ci :cs find i <C-R>=expand("<cfile>")<CR><CR>
-nnoremap <buffer> <localleader>o  :Gtags -Pi  
-nnoremap <buffer> <localleader>d  :Gtags -di  
+nnoremap <buffer> <localleader>o  :Gtags -Pi<cr>
+nnoremap <buffer> <localleader>d  :Gtags -di<cr>
 nnoremap <buffer> <localleader>s :Gtags -f %<cr>
 
 
