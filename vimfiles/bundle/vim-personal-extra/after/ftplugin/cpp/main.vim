@@ -39,15 +39,26 @@ nnoremap <buffer> <localleader>uid   :call mylib#InlineCommand("uuidgen")<cr>
 
 nnoremap <buffer> <localleader>gr :GtagsCursor<cr>:cc<cr>
 nnoremap <buffer> <localleader>cs :cs find s <C-R>=expand("<cword>")<CR><CR>
+"cscope definition
 nnoremap <buffer> <localleader>cg :cs find g <C-R>=expand("<cword>")<CR><CR>
+"cscpoe callers
 nnoremap <buffer> <localleader>cc :cs find c <C-R>=expand("<cword>")<CR><CR>
+"cscope text
 nnoremap <buffer> <localleader>ct :cs find t <C-R>=expand("<cword>")<CR><CR>
+"cscope egrep
 nnoremap <buffer> <localleader>ce :cs find e <C-R>=expand("<cword>")<CR><CR>
 nnoremap <buffer> <localleader>cf :cs find f <C-R>=expand("<cfile>")<CR><CR>
+" cscope include file search
 nnoremap <buffer> <localleader>ci :cs find i <C-R>=expand("<cfile>")<CR><CR>
+" open file
 nnoremap <buffer> <localleader>o  :Gtags -Pi<cr>
+" goto def
 nnoremap <buffer> <localleader>d  :Gtags -di<cr>
+"summarise file
 nnoremap <buffer> <localleader>s :Gtags -f %<cr>
+"clang format
+nnoremap <buffer> <localleader>cf :call <SID>ClangFormat()<cr>
+nnoremap <buffer> <localleader>cf :call <SID>ClangFormat()<cr>
 
 
 augroup CppMain
@@ -61,3 +72,19 @@ let s:filename=expand('<sfile>', ':p')
 function! s:ScriptPath()
 	return s:filename
 endfunction
+
+
+
+if exists("g:clangFormatPythonScriptPath")
+    let s:clangFormatPythonScriptPath = g:clangFormatPythonScriptPath
+else
+	let s:clangFormatPythonScriptPath = findfile("~/localInstall/clang-format.py")
+endif
+function! s:ClangFormat()
+	pyf s:clangFormatPythonScriptPath
+endfunction
+function! s:Formatonsave()
+	let l:formatdiff = 1
+	pyf s:clangFormatPythonScriptPath
+endfunction
+autocmd BufWritePre <buffer> call <SID>Formatonsave()
