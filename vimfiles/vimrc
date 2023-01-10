@@ -82,7 +82,7 @@ filetype plugin indent on    " required
 
 set vb       " turn on visual bell
 set t_vb=    " turn of sound bell
-colorscheme desert
+colorscheme lunaperche
 
 set directory="~/vim-swap//"  "location to store vim-swap files
 set diffopt=filler,iwhite,vertical

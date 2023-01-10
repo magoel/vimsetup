@@ -81,13 +81,13 @@ else
 	let s:clangFormatPythonScriptPath = findfile("~/localInstall/clang-format.py")
 endif
 function! s:ClangFormat()
-	pyf s:clangFormatPythonScriptPath
+	pyfile s:clangFormatPythonScriptPath
 endfunction
 function! s:Formatonsave()
 	let l:formatdiff = 1
-	pyf s:clangFormatPythonScriptPath
+	pyfile s:clangFormatPythonScriptPath
 endfunction
-autocmd BufWritePre <buffer> call <SID>Formatonsave()
+"autocmd BufWritePre <buffer> call <SID>Formatonsave()
 
 " helper files
 " movement.vim
