@@ -88,3 +88,6 @@ function! s:Formatonsave()
 	pyf s:clangFormatPythonScriptPath
 endfunction
 autocmd BufWritePre <buffer> call <SID>Formatonsave()
+
+" helper files
+" movement.vim
