@@ -80,14 +80,40 @@ if exists("g:clangFormatPythonScriptPath")
 else
 	let s:clangFormatPythonScriptPath = findfile("~/localInstall/clang-format.py")
 endif
+
 function! s:ClangFormat()
-	pyfile s:clangFormatPythonScriptPath
+	if s:clangFormatPythonScriptPath !=# ""
+		execute "py3file " . s:clangFormatPythonScriptPath
+	endif
 endfunction
+
 function! s:Formatonsave()
-	let l:formatdiff = 1
-	pyfile s:clangFormatPythonScriptPath
+	if s:clangFormatPythonScriptPath !=# ""
+		let l:formatdiff = 1
+		execute "py3file " . s:clangFormatPythonScriptPath
+	endif
 endfunction
-"autocmd BufWritePre <buffer> call <SID>Formatonsave()
+autocmd BufWritePre <buffer> call <SID>Formatonsave()
+
+
+
+"configuring lsp
+if executable("clangd")
+	let lspServers = [
+		\     #{
+		\        filetype: ['c', 'cpp'],
+		\        path: 'clangd',
+		\        args: ['--background-index']
+		\      }
+		\   ]
+	autocmd VimEnter * call LspAddServer(lspServers)
+	let lspOpts = {'autoHighlightDiags': v:true}
+	autocmd VimEnter * call LspOptionsSet(lspOpts)
+endif
+
+
+
 
 " helper files
 " movement.vim
+" header.vim

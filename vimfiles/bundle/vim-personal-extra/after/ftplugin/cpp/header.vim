@@ -5,19 +5,23 @@ let g:CppHeaderAuthorName =  "magoel"
 
 vnoremap <buffer> <localleader>ch :<c-u>call <SID>GenHeader("Class", "")<cr>
 vnoremap <buffer> <localleader>fh :<c-u>call <SID>GenHeader("Function", "")<cr>
+nnoremap <buffer> <localleader>ch :<c-u>call <SID>GenHeader("Class", expand("<cword>"))<cr>
+nnoremap <buffer> <localleader>fh :<c-u>call <SID>GenHeader("Function", expand("<cword>"))<cr>
 
 function! s:GenHeader(construct, name)
 	" only allow char-wise visual mode
-	if visualmode() !=# 'v'
-		return
-	endif
-
 	let l:saved_unnamed_register = @@
-	normal! `<v`>y
-	let l:line = line("'<") - 1 "line above selected
+	if  a:name ==# ""
+		normal! `<v`>y
+		let l:fname = @@
+		let l:line = line("'<") - 1 "line above selected
+	else
+		let l:fname = a:name
+		let l:line = line(".") - 1 "line above selected
+	endif
 	let l:header = []
 	let l:header += ["/*-----------------------------------------------------------------------------"]
-	let l:header += ["	%%" . a:construct . ": " . @@]
+	let l:header += ["	%%" . a:construct . ": " . l:fname]
 	let l:header += ["	%%Author: " . g:CppHeaderAuthorName]
 	let l:header += ["-----------------------------------------------------------------------------*/"]
 	call append(l:line, l:header)
