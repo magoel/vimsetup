@@ -58,7 +58,7 @@ nnoremap <buffer> <localleader>d  :Gtags -di<cr>
 nnoremap <buffer> <localleader>s :Gtags -f %<cr>
 "clang format
 nnoremap <buffer> <localleader>cf :call <SID>ClangFormat()<cr>
-nnoremap <buffer> <localleader>cf :call <SID>ClangFormat()<cr>
+vnoremap <buffer> <localleader>cf :call <SID>ClangFormat()<cr>
 
 
 augroup CppMain
@@ -98,18 +98,22 @@ autocmd BufWritePre <buffer> call <SID>Formatonsave()
 
 
 "configuring lsp
-if executable("clangd")
-	let lspServers = [
-		\     #{
-		\        filetype: ['c', 'cpp'],
-		\        path: 'clangd',
-		\        args: ['--background-index']
-		\      }
-		\   ]
-	autocmd VimEnter * call LspAddServer(lspServers)
-	let lspOpts = {'autoHighlightDiags': v:true}
-	autocmd VimEnter * call LspOptionsSet(lspOpts)
-endif
+function! s:ConfigureLsp()
+	if executable("clangd")
+		let s:lspServers = [
+					\     #{
+					\        filetype: ['c', 'cpp'],
+					\        path: 'clangd',
+					\        args: ['--background-index']
+					\      }
+					\   ]
+		call LspAddServer(s:lspServers)
+		let s:lspOpts = {'autoHighlightDiags': v:false}
+		call LspOptionsSet(s:lspOpts)
+	endif
+endfunction
+command! -nargs=0 -bar LspStart call <SID>ConfigureLsp()
+
 
 
 

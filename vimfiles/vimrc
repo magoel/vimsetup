@@ -106,8 +106,15 @@ nnoremap ga :EasyAlign
 "set keywordprg=:Man
 "let g:ycm_auto_trigger = 1
 "
+vnoremap  <buffer> <leader>y  y:let @+=@"<cr>
+nnoremap  <buffer> <leader>p  "+p
 
 
-vnoremap  <buffer> <leader>y  "+y
-vnoremap  <buffer> <leader>p  "+p
 
+" Added :cfilter command for filtering quickfix list further
+packadd cfilter
+augroup QuickFixConfigure
+	au!
+	" relative numb
+	autocmd BufReadPost quickfix setlocal relativenumber
+augroup END
