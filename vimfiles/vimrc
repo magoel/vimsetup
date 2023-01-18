@@ -45,6 +45,7 @@ Plugin 'bfrg/vim-cpp-modern'
 Plugin 'yegappan/lsp'
 Plugin 'morhetz/gruvbox'
 Plugin 'tomasr/molokai'
+Plugin 'puremourning/vimspector'
 "Plugin 'vim-scripts/taglist.vim'
 let s:var = "file://" . s:vim_personal_extra_path
 call vundle#config#bundle(s:var)
@@ -117,4 +118,22 @@ augroup QuickFixConfigure
 	au!
 	" relative numb
 	autocmd BufReadPost quickfix setlocal relativenumber
+augroup END
+
+let g:vimspector_enable_mappings = 'VISUAL_STUDIO'
+
+let lspServers = [
+			\     #{
+			\	 filetype: ['javascript', 'typescript'],
+			\	 path: 'typescript-language-server',
+			\	 args: ['--stdio']
+			\      }
+			\   ]
+let lspOpts = {'autoHighlightDiags': v:false}
+augroup js-lsp
+	au!
+	autocmd VimEnter * call LspAddServer(lspServers)
+	autocmd VimEnter * call LspOptionsSet(lspOpts)
+	autocmd VimEnter * call LspAddServer(lspServers)
+	autocmd VimEnter * call LspOptionsSet(lspOpts)
 augroup END
