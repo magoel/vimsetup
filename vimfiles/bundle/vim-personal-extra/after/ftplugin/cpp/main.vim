@@ -33,11 +33,17 @@ GtagsCscope
 
 
 "mappings
+
+"edit vimrc for this filetype
 nnoremap <buffer> <localleader>ev   :vertical topleft split <C-R>=<SID>ScriptPath()<cr><cr>
+"source vimrc for this filetype
 nnoremap <buffer> <localleader>sv   :source <C-R>=<SID>ScriptPath()<cr><cr>
+"generate uuid
 nnoremap <buffer> <localleader>uid   :call mylib#InlineCommand("uuidgen")<cr>
 
+"Lookup gtags at current cursor contextually
 nnoremap <buffer> <localleader>gr :GtagsCursor<cr>:cc<cr>
+"cscope symbol
 nnoremap <buffer> <localleader>cs :cs find s <C-R>=expand("<cword>")<CR><CR>
 "cscope definition
 nnoremap <buffer> <localleader>cg :cs find g <C-R>=expand("<cword>")<CR><CR>
@@ -47,6 +53,7 @@ nnoremap <buffer> <localleader>cc :cs find c <C-R>=expand("<cword>")<CR><CR>
 nnoremap <buffer> <localleader>ct :cs find t <C-R>=expand("<cword>")<CR><CR>
 "cscope egrep
 nnoremap <buffer> <localleader>ce :cs find e <C-R>=expand("<cword>")<CR><CR>
+"cscope file
 nnoremap <buffer> <localleader>cf :cs find f <C-R>=expand("<cfile>")<CR><CR>
 " cscope include file search
 nnoremap <buffer> <localleader>ci :cs find i <C-R>=expand("<cfile>")<CR><CR>
@@ -58,14 +65,10 @@ nnoremap <buffer> <localleader>d  :Gtags -di<cr>
 nnoremap <buffer> <localleader>s :Gtags -f %<cr>
 "clang format
 nnoremap <buffer> <localleader>cf :call <SID>ClangFormat()<cr>
-nnoremap <buffer> <localleader>cf :call <SID>ClangFormat()<cr>
+"Start Lsp Server
+nnoremap <buffer> <localleader>ls :call <SID>StartLspServerForCpp()<cr>
 
 
-augroup CppMain
-	au!
-	"Remove trailing white spaces before writing files
-	autocmd  BufWritePre <buffer> RemoveTrailingSpaces
-augroup END
 
 
 let s:filename=expand('<sfile>', ':p')
@@ -93,23 +96,37 @@ function! s:Formatonsave()
 		execute "py3file " . s:clangFormatPythonScriptPath
 	endif
 endfunction
-autocmd BufWritePre <buffer> call <SID>Formatonsave()
+
+augroup CppMain
+	au!
+	"Remove trailing white spaces before writing files
+	" autocmd  BufWritePre <buffer> RemoveTrailingSpaces
+	" autocmd BufWritePre <buffer> call <SID>Formatonsave()
+augroup END
 
 
 
-"configuring lsp
-if executable("clangd")
-	let lspServers = [
-		\     #{
-		\        filetype: ['c', 'cpp'],
-		\        path: 'clangd',
-		\        args: ['--background-index']
-		\      }
-		\   ]
-	autocmd VimEnter * call LspAddServer(lspServers)
-	let lspOpts = {'autoHighlightDiags': v:true}
-	autocmd VimEnter * call LspOptionsSet(lspOpts)
-endif
+function! s:StartLspServerForCpp()
+	"configuring lsp
+	echom "Starting Lsp Server for CppMain"
+	if executable("clangd")
+		let lspServers = [
+			\     #{
+			\        filetype: ['c', 'cpp'],
+			\        path: 'clangd',
+			\        args: ['--background-index']
+			\      }
+			\   ]
+
+		call LspAddServer(lspServers)
+		let lspOpts = {'autoHighlightDiags': v:false}
+		augroup CppLsp
+			au!
+			autocmd VimEnter * call LspAddServer(lspServers)
+			autocmd VimEnter * call LspOptionsSet(lspOpts)
+		augroup END
+	endif
+endfunction
 
 
 
