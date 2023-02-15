@@ -43,7 +43,9 @@ Plugin 'tomtom/tcomment_vim'
 Plugin 'ivechan/gtags.vim'
 Plugin 'bfrg/vim-cpp-modern'
 Plugin 'yegappan/lsp'
+Plugin 'morhetz/gruvbox'
 Plugin 'tomasr/molokai'
+Plugin 'puremourning/vimspector'
 "Plugin 'vim-scripts/taglist.vim'
 let s:var = "file://" . s:vim_personal_extra_path
 call vundle#config#bundle(s:var)
@@ -84,6 +86,8 @@ filetype plugin indent on    " required
 
 set vb       " turn on visual bell
 set t_vb=    " turn of sound bell
+
+"setting color scheme
 colorscheme molokai
 
 set directory="~/vim-swap//"  "location to store vim-swap files
@@ -101,8 +105,11 @@ nnoremap ga :EasyAlign
 
 "runtime ftplugin/man.vim
 "set keywordprg=:Man
-"let g:ycm_auto_trigger = 1
+"mapping for copying to OS clipboard (on Windows)
+vnoremap  <buffer> <leader>y  y:let @+=@"<cr>
+nnoremap  <buffer> <leader>p  "+p
 
+"configuration for js/ts lang-server
 function! StartLspServerForJs()
 	"configuring lsp
 	echom "Starting Lsp Server for Js & Ts"
@@ -123,9 +130,18 @@ function! StartLspServerForJs()
 		augroup END
 	endif
 endfunction
-
 augroup JsMain
 	au!
 	autocmd FileType javascript,typescript :nnoremap <buffer> <localleader>ls :call StartLspServerForJs()<cr>
 augroup END
 
+
+" Added :cfilter command for filtering quickfix list further
+packadd cfilter
+augroup QuickFixConfigure
+	au!
+	" relative numb
+	autocmd BufReadPost quickfix setlocal relativenumber
+augroup END
+
+let g:vimspector_enable_mappings = 'VISUAL_STUDIO'

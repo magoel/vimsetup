@@ -47,7 +47,7 @@ endfunction
 
 
 function! s:AsciiTable(number)
-	if a:number >= 32 && arg <= 126
+	if a:number >= 32 && a:number <= 126
 		return strpart(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz", a:number - 32, 1)
 	else
 		return " "

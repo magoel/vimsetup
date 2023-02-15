@@ -105,7 +105,6 @@ augroup CppMain
 augroup END
 
 
-
 function! s:StartLspServerForCpp()
 	"configuring lsp
 	echom "Starting Lsp Server for CppMain"
@@ -127,7 +126,6 @@ function! s:StartLspServerForCpp()
 		augroup END
 	endif
 endfunction
-
 
 
 
