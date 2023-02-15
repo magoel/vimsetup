@@ -102,6 +102,30 @@ nnoremap ga :EasyAlign
 "runtime ftplugin/man.vim
 "set keywordprg=:Man
 "let g:ycm_auto_trigger = 1
-"
 
+function! StartLspServerForJs()
+	"configuring lsp
+	echom "Starting Lsp Server for Js & Ts"
+	if executable("typescript-language-server")
+		let lspServers = [
+			\     #{
+			\	 		filetype: ['javascript', 'typescript'],
+			\	 		path: 'typescript-language-server',
+			\	 		args: ['--stdio']
+			\      }
+			\   ]
+		call LspAddServer(lspServers)
+		let lspOpts = {'autoHighlightDiags': v:false}
+		augroup JsLsp
+			au!
+			autocmd VimEnter * call LspAddServer(lspServers)
+			autocmd VimEnter * call LspOptionsSet(lspOpts)
+		augroup END
+	endif
+endfunction
+
+augroup JsMain
+	au!
+	autocmd FileType javascript,typescript :nnoremap <buffer> <localleader>ls :call StartLspServerForJs()<cr>
+augroup END
 
