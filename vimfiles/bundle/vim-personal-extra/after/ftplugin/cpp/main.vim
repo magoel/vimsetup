@@ -68,7 +68,92 @@ nnoremap <buffer> <localleader>cf :call <SID>ClangFormat()<cr>
 "Start Lsp Server
 nnoremap <buffer> <localleader>ls :call <SID>StartLspServerForCpp()<cr>
 
+"research mappings
+nnoremap <buffer> <localleader>rs :cs find s <C-R>=expand("<cword>")<CR><CR>
 
+
+"rd -- reSearch definition
+nnoremap <buffer> <localleader>rd :call <SID>ReSearchCli('<C-R>=expand("<cword>")<CR>', 1)<CR>
+"rr -- reSearch references
+nnoremap <buffer> <localleader>rr :call <SID>ReSearchCli('<C-R>=expand("<cword>")<CR>', 2)<CR>
+"rc -- reSearch cursor
+nnoremap <buffer> <localleader>rc :call <SID>ReSearchCli('<C-R>=expand("<cword>")<CR>', 3)<CR>
+"re -- reSearch expression -- will prompt user
+nnoremap <buffer> <localleader>re :call <SID>ReSearchCli('<C-R>=expand("<cword>")<CR>', 4)<CR>
+"rs -- ask user to change reSearch scope
+nnoremap <buffer> <localleader>rs :call <SID>ChangeReSearchScope()<CR>
+
+
+let s:reSearchCliCmd = "node /mnt/c/Users/mgoel/repos/mgoel/codeSearch/index.js"
+if exists("g:reSearchCliCmd")
+	let s:reSearchCliCmd = g:reSearchCliCmd
+endif
+
+let s:reSearchScope = "/word"
+if exists("g:reSearchScope")
+	let s:reSearchScope = g:reSearchScope
+endif
+
+
+let s:reSearchCacheDir = getcwd(-1)
+if exists("g:reSearchCacheDir")
+	let s:reSearchCacheDir  = g:reSearchCacheDir
+endif
+
+let s:reSearchDefinition = 1
+let s:reSearchReference = 2
+let s:reSearchCursor = 3
+let s:reSearchExpression=4
+
+function! s:ReSearchCli(searchexpr, kind)
+	let l:searchexpr = trim(a:searchexpr)
+	let l:kind = a:kind
+	if l:searchexpr =~# '^$'
+		" searchexpr is empty
+		let l:kind = 4
+		"todo : add custom completion using global as well
+		call inputsave()
+		let l:searchexpr = input("ReSearch pattern: ", expand('<cword>'))
+		call inputrestore()
+		let l:searchexpr = trim(l:searchexpr)
+		" still empty
+		if l:searchexpr =~# '^$'
+			echom "Blank search-epxression found .. terminating search"
+			return
+		endif
+	endif
+	let l:cmd = s:reSearchCliCmd .. ' '
+	if l:kind == s:reSearchDefinition
+		let l:cmd = l:cmd .. shellescape('def:' .. l:searchexpr)
+	elseif l:kind == s:reSearchReference
+		let l:cmd = l:cmd .. shellescape('ref:' .. l:searchexpr)
+	else
+		" both cursor and expression are plugged as is
+		let l:cmd = l:cmd .. shellescape(l:searchexpr)
+	endif
+	let l:cmd = l:cmd ..
+				\ ' --scope ' .. s:reSearchScope .. 
+				\ ' --cachedir ' .. s:reSearchCacheDir .. 
+				\ '  --download '
+	echom 'Executing : ' .. l:cmd
+	let l:qfixtitle = 'searchExpr : ' .. l:searchexpr .. '  in scope of ' .. s:reSearchScope
+    call setqflist([], ' ', {'lines' : systemlist(l:cmd), 'title' : l:qfixtitle})
+	copen
+endfunction
+
+function! s:ChangeReSearchScope()
+	call inputsave()
+	" todo provide command completion here
+	let l:scope = input("ReSearch Scope: ", s:reSearchScope)
+	call inputrestore()
+	let l:scope = trim(l:scope)
+	if l:scope =~# '^$'
+		echom 'Blank reSearch scope .. restoring previous'
+	elseif l:scope !~# '^\/.*'
+		echom 'Scope has to start with /'
+	endif
+	let s:reSearchScope = l:scope
+endfunction
 
 
 let s:filename=expand('<sfile>', ':p')
@@ -110,11 +195,11 @@ function! s:StartLspServerForCpp()
 	echom "Starting Lsp Server for CppMain"
 	if executable("clangd")
 		let lspServers = [
-			\     #{
-			\        filetype: ['c', 'cpp'],
-			\        path: 'clangd',
-			\        args: ['--background-index']
-			\      }
+					\     #{
+					\        filetype: ['c', 'cpp'],
+					\        path: 'clangd',
+					\        args: ['--background-index']
+					\      }
 			\   ]
 
 		call LspAddServer(lspServers)
