@@ -1,7 +1,7 @@
 setlocal number "show line numbers"
 setlocal wrap  " wrap lines"
 
-setlocal foldmethod=syntax
+"setlocal foldmethod=syntax
 setlocal foldlevel=2
 
 
@@ -64,7 +64,8 @@ vnoremap <buffer> <localleader>cf :call <SID>ClangFormat()<cr>
 augroup CppMain
 	au!
 	"Remove trailing white spaces before writing files
-	autocmd  BufWritePre <buffer> RemoveTrailingSpaces
+	"autocmd  BufWritePre <buffer> RemoveTrailingSpaces
+	"autocmd BufWritePre <buffer> call <SID>Formatonsave()
 augroup END
 
 
@@ -93,7 +94,6 @@ function! s:Formatonsave()
 		execute "py3file " . s:clangFormatPythonScriptPath
 	endif
 endfunction
-autocmd BufWritePre <buffer> call <SID>Formatonsave()
 
 
 
