@@ -15,6 +15,8 @@ setlocal ignorecase
 nnoremap <buffer> <localleader>ev   :vertical topleft split <C-R>=<SID>ScriptPath()<cr><cr>
 nnoremap <buffer> <localleader>sv   :source <C-R>=<SID>ScriptPath()<cr><cr>
 nnoremap <buffer> <localleader>ct   :call <SID>ConvertToTagString()<cr>
+nnoremap <buffer> <localleader>ch   :call <SID>ConvertToHex()<cr>
+" nnoremap <buffer> <localleader>cd   :call <SID>ConvertToDecimal()<cr>
 
 augroup CppMain
 	au!
@@ -29,6 +31,17 @@ function! s:ScriptPath()
 	return s:filename
 endfunction
 
+
+function! s:ConvertToHex()
+	"appends converted tag value inside brackets
+	" expected to be used inside normal mode
+	let l:number = expand("<cWORD>") + 0
+	"let l:output = sha256(l:number)
+	let l:output = printf("%x", l:number)
+    execute 'normal! ea(' . l:output . ')'
+	" also add the tag to system clipboard register
+	let @+ = l:output
+endfunction
 
 function! s:ConvertToTagString()
 	"appends converted tag value inside brackets

@@ -1,7 +1,7 @@
 setlocal number "show line numbers"
 setlocal wrap  " wrap lines"
 
-setlocal foldmethod=syntax
+"setlocal foldmethod=syntax
 setlocal foldlevel=2
 
 
@@ -69,9 +69,6 @@ nnoremap <buffer> <localleader>cf :call <SID>ClangFormat()<cr>
 nnoremap <buffer> <localleader>ls :call <SID>StartLspServerForCpp()<cr>
 
 "research mappings
-nnoremap <buffer> <localleader>rs :cs find s <C-R>=expand("<cword>")<CR><CR>
-
-
 "rd -- reSearch definition
 nnoremap <buffer> <localleader>rd :call <SID>ReSearchCli('<C-R>=expand("<cword>")<CR>', 1)<CR>
 "rr -- reSearch references
@@ -155,12 +152,10 @@ function! s:ChangeReSearchScope()
 	let s:reSearchScope = l:scope
 endfunction
 
-
 let s:filename=expand('<sfile>', ':p')
 function! s:ScriptPath()
 	return s:filename
 endfunction
-
 
 
 if exists("g:clangFormatPythonScriptPath")
@@ -181,14 +176,6 @@ function! s:Formatonsave()
 		execute "py3file " . s:clangFormatPythonScriptPath
 	endif
 endfunction
-
-augroup CppMain
-	au!
-	"Remove trailing white spaces before writing files
-	" autocmd  BufWritePre <buffer> RemoveTrailingSpaces
-	" autocmd BufWritePre <buffer> call <SID>Formatonsave()
-augroup END
-
 
 function! s:StartLspServerForCpp()
 	"configuring lsp
