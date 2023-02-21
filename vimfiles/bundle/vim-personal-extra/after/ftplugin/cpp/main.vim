@@ -16,7 +16,7 @@ setlocal ignorecase
 
 "configure gtags
 setlocal cscopetag
-setlocal switchbuf=useopen
+setlocal switchbuf=uselast
 let GtagsCscope_Ignore_Case = 1
 let GtagsCscope_Keep_Alive = 1
 let g:Gtags_No_Auto_Jump = 0
@@ -76,7 +76,7 @@ nnoremap <buffer> <localleader>rr :call <SID>ReSearchCli('<C-R>=expand("<cword>"
 "rc -- reSearch cursor
 nnoremap <buffer> <localleader>rc :call <SID>ReSearchCli('<C-R>=expand("<cword>")<CR>', 3)<CR>
 "re -- reSearch expression -- will prompt user
-nnoremap <buffer> <localleader>re :call <SID>ReSearchCli('<C-R>=expand("<cword>")<CR>', 4)<CR>
+nnoremap <buffer> <localleader>re :call <SID>ReSearchCli('', 4)<CR>
 "rs -- ask user to change reSearch scope
 nnoremap <buffer> <localleader>rs :call <SID>ChangeReSearchScope()<CR>
 
@@ -92,7 +92,7 @@ if exists("g:reSearchScope")
 endif
 
 
-let s:reSearchCacheDir = getcwd(-1)
+let s:reSearchCacheDir = getcwd(-1) .. "/reSearchCache"
 if exists("g:reSearchCacheDir")
 	let s:reSearchCacheDir  = g:reSearchCacheDir
 endif
@@ -118,6 +118,7 @@ function! s:ReSearchCli(searchexpr, kind)
 			echom "Blank search-epxression found .. terminating search"
 			return
 		endif
+		echom ""
 	endif
 	let l:cmd = s:reSearchCliCmd .. ' '
 	if l:kind == s:reSearchDefinition
@@ -134,8 +135,24 @@ function! s:ReSearchCli(searchexpr, kind)
 				\ '  --download '
 	echom 'Executing : ' .. l:cmd
 	let l:qfixtitle = 'searchExpr : ' .. l:searchexpr .. '  in scope of ' .. s:reSearchScope
-    call setqflist([], ' ', {'lines' : systemlist(l:cmd), 'title' : l:qfixtitle})
-	copen
+	let l:result = systemlist(l:cmd)
+	if len(l:result) == 0 
+		echom "Failed to search " .. l:searchexpr .. " in scope of " .. s:reSearchScope
+		if len(s:reSearchScope) > 1
+			"save current scope
+			let l:saveReSearchScope = s:reSearchScope
+			" go a level up in reSearchScope
+			let s:reSearchScope = fnamemodify(s:reSearchScope, ":h")
+			echom "Trying search " .. l:searchexpr .. " in scope of " .. s:reSearchScope
+			call <SID>ReSearchCli(l:searchexpr, 3)
+			" restore scope
+			let s:reSearchScope = l:saveReSearchScope
+		endif
+	else
+		call setqflist([], ' ', {'lines' : l:result, 'title' : l:qfixtitle})
+		" open quickfix window of height 10 at bottom
+		botright cwindow 10
+	endif
 endfunction
 
 function! s:ChangeReSearchScope()
@@ -148,8 +165,9 @@ function! s:ChangeReSearchScope()
 		echom 'Blank reSearch scope .. restoring previous'
 	elseif l:scope !~# '^\/.*'
 		echom 'Scope has to start with /'
+	else
+		let s:reSearchScope = l:scope
 	endif
-	let s:reSearchScope = l:scope
 endfunction
 
 let s:filename=expand('<sfile>', ':p')
