@@ -7,3 +7,5 @@ vim-cpp-modern
 vim-easy-align
 vim-sensible
 vim-slime
+lsp
+molokai
