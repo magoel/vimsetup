@@ -5,15 +5,15 @@ endif
 setlocal switchbuf=uselast
 "research mappings
 "rd -- reSearch definition
-nnoremap <buffer> <localleader>rd :call <SID>ReSearchCli('<C-R>=expand("<cword>")<CR>', 1)<CR>
+nnoremap  <localleader>rd :call <SID>ReSearchCli('<C-R>=expand("<cword>")<CR>', 1)<CR>
 "rr -- reSearch references
-nnoremap <buffer> <localleader>rr :call <SID>ReSearchCli('<C-R>=expand("<cword>")<CR>', 2)<CR>
+nnoremap  <localleader>rr :call <SID>ReSearchCli('<C-R>=expand("<cword>")<CR>', 2)<CR>
 "rc -- reSearch cursor
-nnoremap <buffer> <localleader>rc :call <SID>ReSearchCli('<C-R>=expand("<cword>")<CR>', 3)<CR>
+nnoremap  <localleader>rc :call <SID>ReSearchCli('<C-R>=expand("<cword>")<CR>', 3)<CR>
 "re -- reSearch expression -- will prompt user
-nnoremap <buffer> <localleader>re :call <SID>ReSearchCli('', 4)<CR>
+nnoremap  <localleader>re :call <SID>ReSearchCli('', 4)<CR>
 "rs -- ask user to change reSearch scope
-nnoremap <buffer> <localleader>rs :call <SID>ChangeReSearchScope()<CR>
+nnoremap  <localleader>rs :call <SID>ChangeReSearchScope()<CR>
 
 
 let s:reSearchCliCmd = "node /mnt/c/Users/mgoel/repos/mgoel/codeSearch/index.js"
