@@ -14,6 +14,8 @@ nnoremap  <localleader>rc :call <SID>ReSearchCli('<C-R>=expand("<cword>")<CR>', 
 nnoremap  <localleader>re :call <SID>ReSearchCli('', 4)<CR>
 "rs -- ask user to change reSearch scope
 nnoremap  <localleader>rs :call <SID>ChangeReSearchScope()<CR>
+"rs -- ask user to change reSearch size limit
+nnoremap  <localleader>rl :call <SID>ChangeReSearchSizeLimit()<CR>
 
 
 let s:reSearchCliCmd = "node /mnt/c/Users/mgoel/repos/mgoel/codeSearch/index.js"
@@ -24,6 +26,11 @@ endif
 let s:reSearchScope = "/word"
 if exists("g:reSearchScope")
 	let s:reSearchScope = g:reSearchScope
+endif
+
+let s:reSearchResultSizeLimit = 50
+if exists("g:reSearchResultSizeLimit")
+	let s:reSearchResultSizeLimit = g:reSearchResultSizeLimit
 endif
 
 
@@ -65,6 +72,7 @@ function! s:ReSearchCli(searchexpr, kind)
 		let l:cmd = l:cmd .. shellescape(l:searchexpr)
 	endif
 	let l:cmd = l:cmd ..
+				\ ' --top ' .. s:reSearchResultSizeLimit .. 
 				\ ' --scope ' .. s:reSearchScope .. 
 				\ ' --cachedir ' .. s:reSearchCacheDir .. 
 				\ '  --download '
@@ -102,6 +110,21 @@ function! s:ChangeReSearchScope()
 		echom 'Scope has to start with /'
 	else
 		let s:reSearchScope = l:scope
+	endif
+endfunction
+
+function! s:ChangeReSearchSizeLimit()
+	call inputsave()
+	" todo provide command completion here
+	let l:resultSizeLimit = input("ReSearch result size limit: ", s:reSearchResultSizeLimit)
+	call inputrestore()
+	let l:resultSizeLimit = trim(l:resultSizeLimit)
+	if l:resultSizeLimit =~# '^$'
+		echom 'Blank reSearch resultSizeLimit .. restoring previous'
+	elseif l:resultSizeLimit !~# '[0-9]\+'
+		echom 'resultSizeLimit should be integer value'
+	else
+		let s:reSearchResultSizeLimit = +l:resultSizeLimit
 	endif
 endfunction
 
