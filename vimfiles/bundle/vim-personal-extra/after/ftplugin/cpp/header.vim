@@ -1,7 +1,7 @@
 "define visual mapping to add function/class-header
 
 
-let g:CppHeaderAuthorName =  "magoel"
+let g:CppHeaderAuthorName =  "mgoel"
 
 vnoremap <buffer> <localleader>ch :<c-u>call <SID>GenHeader("Class", "")<cr>
 vnoremap <buffer> <localleader>fh :<c-u>call <SID>GenHeader("Function", "")<cr>
