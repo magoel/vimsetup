@@ -14,8 +14,14 @@ nnoremap  <localleader>rc :call <SID>ReSearchCli('<C-R>=expand("<cword>")<CR>', 
 nnoremap  <localleader>re :call <SID>ReSearchCli('', 4)<CR>
 "rs -- ask user to change reSearch scope
 nnoremap  <localleader>rs :call <SID>ChangeReSearchScope()<CR>
-"rs -- ask user to change reSearch size limit
+"rl -- ask user to change reSearch size limit
 nnoremap  <localleader>rl :call <SID>ChangeReSearchSizeLimit()<CR>
+"rp -- ask user to change reSearch project name
+nnoremap  <localleader>rp :call <SID>ChangeReSearchProjectName()<CR>
+"ro -- ask user to change reSearch repo name
+nnoremap  <localleader>ro :call <SID>ChangeReSearchRepository()<CR>
+"rb -- ask user to change reSearch branch name
+nnoremap  <localleader>rb :call <SID>ChangeReSearchBranch()<CR>
 
 
 let s:reSearchCliCmd = "node /mnt/c/Users/mgoel/repos/mgoel/codeSearch/index.js"
@@ -31,6 +37,21 @@ endif
 let s:reSearchResultSizeLimit = 50
 if exists("g:reSearchResultSizeLimit")
 	let s:reSearchResultSizeLimit = g:reSearchResultSizeLimit
+endif
+
+let s:reSearchProjectName = "office"
+if exists("g:reSearchProjectName")
+	let s:reSearchProjectName = g:reSearchProjectName
+endif
+
+let s:reSearchRepoName = "office"
+if exists("g:reSearchRepoName")
+	let s:reSearchRepoName = g:reSearchRepoName
+endif
+
+let s:reSearchBranchName = "main"
+if exists("g:reSearchBranchName")
+	let s:reSearchBranchName = g:reSearchBranchName
 endif
 
 
@@ -74,8 +95,11 @@ function! s:ReSearchCli(searchexpr, kind)
 	let l:cmd = l:cmd ..
 				\ ' --top ' .. s:reSearchResultSizeLimit .. 
 				\ ' --scope ' .. s:reSearchScope .. 
+				\ ' --project ' .. s:reSearchProjectName .. 
+				\ ' --repository ' .. s:reSearchRepoName .. 
+				\ ' --branch ' .. s:reSearchBranchName .. 
 				\ ' --cachedir ' .. s:reSearchCacheDir .. 
-				\ '  --download '
+				\ ' --download '
 	echom 'Executing : ' .. l:cmd
 	let l:qfixtitle = 'searchExpr : ' .. l:searchexpr .. '  in scope of ' .. s:reSearchScope
 	let l:result = systemlist(l:cmd)
@@ -125,6 +149,45 @@ function! s:ChangeReSearchSizeLimit()
 		echom 'resultSizeLimit should be integer value'
 	else
 		let s:reSearchResultSizeLimit = +l:resultSizeLimit
+	endif
+endfunction
+
+function! s:ChangeReSearchProjectName()
+	call inputsave()
+	" todo provide command completion here
+	let l:projectName = input("ReSearch Project: ", s:reSearchProjectName)
+	call inputrestore()
+	let l:projectName = trim(l:projectName)
+	if l:projectName =~# '^$'
+		echom 'Blank reSearch projectName .. restoring previous'
+	else
+		let s:reSearchProjectName = l:projectName
+	endif
+endfunction
+
+function! s:ChangeReSearchBranch()
+	call inputsave()
+	" todo provide command completion here
+	let l:branchName = input("ReSearch BranchName: ", s:reSearchBranchName)
+	call inputrestore()
+	let l:branchName = trim(l:branchName)
+	if l:branchName =~# '^$'
+		echom 'Blank reSearch branchName .. restoring previous'
+	else
+		let s:reSearchBranchName = l:branchName
+	endif
+endfunction
+
+function! s:ChangeReSearchRepository()
+	call inputsave()
+	" todo provide command completion here
+	let l:repoName = input("ReSearch Repository: ", s:reSearchRepoName)
+	call inputrestore()
+	let l:repoName = trim(l:repoName)
+	if l:repoName =~# '^$'
+		echom 'Blank reSearch repoName .. restoring previous'
+	else
+		let s:reSearchRepoName = l:repoName
 	endif
 endfunction
 
