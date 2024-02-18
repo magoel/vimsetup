@@ -48,6 +48,8 @@ Plugin 'morhetz/gruvbox'
 Plugin 'tomasr/molokai'
 Plugin 'puremourning/vimspector'
 Plugin 'github/copilot.vim'
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
 "Plugin 'vim-scripts/taglist.vim'
 let s:var = "file://" . s:vim_personal_extra_path
 call vundle#config#bundle(s:var)
@@ -114,6 +116,10 @@ set statusline+=\ %m%r%w                             "Modified? Readonly?
 xnoremap ga :EasyAlign
 nnoremap ga :EasyAlign
 
+
+" configure vim-fugitive
+"let g:fugitive_git_executable = 'git.exe'
+
 "runtime ftplugin/man.vim
 "set keywordprg=:Man
 "mapping for copying to OS clipboard (on Windows)
@@ -156,3 +162,41 @@ augroup QuickFixConfigure
 augroup END
 
 let g:vimspector_enable_mappings = 'VISUAL_STUDIO'
+
+let g:clang_format_path = "/mnt/e/mgd2off1/Build/OfficeNugetInit/gen/.versionless/microsoft.office.clang-format/bin/clang-format.exe"
+let g:clang_format_fallback_style = "Microsoft"
+
+
+" to open file changed from main-branch in quick-fix list
+nnoremap <leader>df :cgetexpr system("git.exe diff --name-only user/mgoel/main..HEAD \| sed s/$/:1:--/g" )<cr>:botright copen<cr>
+
+
+"vim errorformat for visual studio
+let &efm = &efm .. "," .. '\ %#%f(%l\\\,%c):\ %m'
+let &efm = &efm .. "," .. '\ %#%f(%l)\ :\ %m'
+"open visual studio log (load-log)
+nnoremap <leader>llb   :call mylib#OpenWindowLog('../Logs/Builds/latest/ProductBuild/Domino.err')<cr>
+
+
+"configure ripgrep as grepprg
+"example :grep -e '(qi\|query)_cast<Csi::RevisionGraph::IOpaqueKeyValueEnumerator' ./word/
+let &grepprg='rg --vimgrep --ignore-case --follow '
+
+"configure fzf plugin
+let g:fzf_layout = { 'window': 'call fzf#vim#with_preview({ "options": ["--layout=reverse", "--info=inline"] })' }
+" find files
+nnoremap <leader>ff :Files<cr>
+" find lines in loaded buffers
+nnoremap <leader>fl :Lines<cr>
+" find files opened in vim-history
+nnoremap <leader>fh :History<cr>
+" search command history
+nnoremap <leader>f: :History:<cr>
+" search search-pattern history
+nnoremap <leader>f/ :History/<cr>
+" search marks
+nnoremap <leader>fm :Marks<cr>
+" search windows and tabs
+nnoremap <leader>fw :Windows<cr>
+" search buffers
+nnoremap <leader>fb :Buffers<cr>
