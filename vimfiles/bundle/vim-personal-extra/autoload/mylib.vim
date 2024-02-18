@@ -25,3 +25,24 @@ function! mylib#Rshift(number, place)
 	return l:ans
 endfunction
 
+function! mylib#OpenWindowLog(logfile)
+	let l:tmpfile = tempname() " generate a temporary file name
+	silent execute '!cp ' .. a:logfile .. ' ' .. l:tmpfile 
+	silent execute 'vsplit'
+	silent execute 'edit ' .. l:tmpfile 
+	" Open the log file in a new buffer
+	"execute 'edit ' .. a:logfile
+	" Set the file format to unix
+	setlocal fileformat=unix
+	" replace <windows drive letter>:\ with \mnt\<lowercase drive letter>\
+	silent try | execute '%s/\([A-Z]\):\\/\\mnt\\\l\1\\/g' | catch /.*/  | finally | endtry
+	" replace \ with /
+	silent try | execute '%s/\\/\//g' | catch /.*/ |  finally | endtry
+	" Write the changes to the file
+	silent write
+	" Close the buffer
+	bdelete
+	silent execute 'cfile ' .. l:tmpfile
+	botright cwindow 10
+endfunction
+

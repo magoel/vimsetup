@@ -41,8 +41,9 @@ nnoremap <buffer> <localleader>sv   :source <C-R>=<SID>ScriptPath()<cr><cr>
 "generate uuid
 nnoremap <buffer> <localleader>uid   :call mylib#InlineCommand("uuidgen")<cr>
 
+
 "Lookup gtags at current cursor contextually
-nnoremap <buffer> <localleader>gr :GtagsCursor<cr>:cc<cr>
+nnoremap <buffer> <localleader>gr :Gtags <C-R>=expand("<cword>")<CR><cr>:cc<cr>
 "cscope symbol
 nnoremap <buffer> <localleader>cs :cs find s <C-R>=expand("<cword>")<CR><CR>
 "cscope definition
@@ -64,7 +65,7 @@ nnoremap <buffer> <localleader>d  :Gtags -di<cr>
 "summarise file
 nnoremap <buffer> <localleader>s :Gtags -f %<cr>
 "clang format
-nnoremap <buffer> <localleader>cf :call <SID>ClangFormat()<cr>
+noremap <buffer> <localleader>= :call <SID>ClangFormat()<cr>
 "Start Lsp Server
 nnoremap <buffer> <localleader>ls :call <SID>StartLspServerForCpp()<cr>
 
