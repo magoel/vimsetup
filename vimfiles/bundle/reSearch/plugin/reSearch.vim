@@ -97,7 +97,6 @@ function! s:EvalReSearchCliCmd()
 	endif
 endfunction
 
-
 let s:reSearchCliCmd = s:EvalReSearchCliCmd()
 
 let s:reSearchScope = "/word"
@@ -262,8 +261,57 @@ function! s:ChangeReSearchRepository()
 	endif
 endfunction
 
-let s:filename=expand('<sfile>', ':p')
-function! s:ScriptPath()
-	return s:filename
+function! s:EvalPullRequestCliCmd()
+	if exists("g:pullRequestCliCmd")
+		return g:pullRequestCliCmd
+	else
+		let l:NodePath = s:EvalNodePath()
+		let l:reSearchAppDir = s:EvalResearchAppDir()
+		call s:EnsureReSearchAppDirDependency()
+		" join path in platform independent way
+		return l:NodePath .. ' ' .. l:reSearchAppDir .. '/ado.js'
+	endif
 endfunction
+
+let s:pullRequestCliCmd = s:EvalPullRequestCliCmd()
+
+function! s:GetPrComments(prId)
+	let l:prId = a:prId
+	if l:prId =~# '^$'
+		" prId is empty
+		call inputsave()
+		let l:prId = input("PR Id: ", expand('<cword>'))
+		call inputrestore()
+		let l:prId = trim(l:prId)
+		" still empty
+		if l:prId =~# '^$'
+			echom "Blank prId found .. terminating search"
+			return
+		endif
+	endif
+	let l:cmd = s:pullRequestCliCmd .. 
+				\ ' downloadpr ' ..
+				\ ' --project ' .. s:reSearchProjectName .. 
+				\ ' --repository ' .. s:reSearchRepoName ..
+				\ ' --pullRequestId ' .. l:prId ..
+				\ ' --status active'
+	echom 'Executing : ' .. l:cmd
+	let l:qfixtitle = 'PR Comments for ' .. 
+				\ s:reSearchProjectName .. '/' ..
+				\ s:reSearchRepoName .. '/' ..
+				\ l:prId
+	let l:result = systemlist(l:cmd)
+	if len(l:result) == 0 
+		echom "Failed to get comments for PR " .. l:prId
+	else
+		call setqflist([], ' ', {'lines' : l:result, 'title' : l:qfixtitle})
+		" open quickfix window of height 10 at bottom
+		botright cwindow 10
+	endif
+endfunction
+
+" define a command which excepts a numeric argument and calls GetPrComments
+command! -nargs=1 PRComments call s:GetPrComments(<f-args>)
+
+
 let loaded_reSearch = 1
