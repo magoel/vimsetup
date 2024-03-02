@@ -24,10 +24,80 @@ nnoremap  <localleader>ro :call <SID>ChangeReSearchRepository()<CR>
 nnoremap  <localleader>rb :call <SID>ChangeReSearchBranch()<CR>
 
 
-let s:reSearchCliCmd = "node /mnt/c/Users/mgoel/repos/mgoel/codeSearch/index.js"
-if exists("g:reSearchCliCmd")
-	let s:reSearchCliCmd = g:reSearchCliCmd
-endif
+" check if executable node is defined on system path or its paths is given in g:NodePath
+function! s:EvalNodePath()
+	if exists("g:NodePath")
+		let l:nodePath = g:NodePath
+		if !filereadable(l:nodePath)
+			echom "node is not found at given path " .. l:nodePath
+			echom "Please install node and make sure it is available on system path or at given path"
+			finish
+		endif
+		return l:nodePath
+	else
+		if !executable("node")
+			echom "node is not found on system path"
+			echom "Please install node and make sure it is available on system path or at given path"
+			finish
+		endif
+		return "node"
+	endif
+endfunction
+
+function! s:EvalResearchAppDir()
+	if exists("g:reSearchAppDir")
+		let l:reSearchAppDir = g:reSearchAppDir
+		" check if it is a directory and exists
+		if !isdirectory(l:reSearchAppDir)
+			echom "reSearchAppDir is not a directory or does not exists " .. l:reSearchAppDir
+			echom "Please install reSearch and make sure it is available on system path or at given path"
+			finish
+		endif
+		return l:reSearchAppDir
+	else
+		let l:reSearchAppDir = finddir('codeSearch', '.;')
+		" check if l:reSearchAppDir is empty
+		if l:reSearchAppDir ==# ''
+			echom "reSearchAppDir is not found in current directory or its parent"
+			echom "Please install reSearch and make sure it is available on system path or at given path"
+			finish
+		endif
+		return l:reSearchAppDir
+	endif
+endfunction
+
+function! s:EnsureReSearchAppDirDependency()
+	let l:reSearchAppDir = s:EvalResearchAppDir()
+	let l:reSearchAppDir = l:reSearchAppDir .. '/node_modules'
+	if !isdirectory(l:reSearchAppDir)
+		let l:cwd = getcwd()
+		execute 'cd ' . l:reSearchAppDir
+		let l:cmd = 'npm install'
+		call system(l:cmd)
+		" check if npm install was successful
+		if v:shell_error
+			echom "npm install failed at " .. l:reSearchAppDir
+			execute 'cd ' . l:cwd
+			finish
+		endif
+		execute 'cd ' . l:cwd
+	endif
+endfunction
+
+
+function! s:EvalReSearchCliCmd()
+	if exists("g:reSearchCliCmd")
+		return g:reSearchCliCmd
+	else
+		let l:NodePath = s:EvalNodePath()
+		let l:reSearchAppDir = s:EvalResearchAppDir()
+		call s:EnsureReSearchAppDirDependency()
+		return l:NodePath .. ' ' .. l:reSearchAppDir .. '/index.js'
+	endif
+endfunction
+
+
+let s:reSearchCliCmd = s:EvalReSearchCliCmd()
 
 let s:reSearchScope = "/word"
 if exists("g:reSearchScope")
