@@ -50,7 +50,7 @@ nnoremap <buffer> <localleader>uid   :call mylib#InlineCommand("uuidgen")<cr>
 
 
 "Lookup gtags at current cursor contextually
-nnoremap <buffer> <localleader>gr :Gtags <C-R>=expand("<cword>")<CR><cr>:cc<cr>
+nnoremap <buffer> <localleader>gr :GtagsCursor<cr>
 "cscope symbol
 nnoremap <buffer> <localleader>cs :cs find s <C-R>=expand("<cword>")<CR><CR>
 "cscope definition

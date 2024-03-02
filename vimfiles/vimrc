@@ -176,6 +176,8 @@ let &efm = &efm .. "," .. '\ %#%f(%l\\\,%c):\ %m'
 let &efm = &efm .. "," .. '\ %#%f(%l)\ :\ %m'
 "open visual studio log (load-log)
 nnoremap <leader>llb   :call mylib#OpenWindowLog('../Logs/Builds/latest/ProductBuild/Domino.err')<cr>
+command! -nargs=1 -complete=file  OpenWindowLog call mylib#OpenWindowLog('<f-args>')
+
 
 
 "configure ripgrep as grepprg
@@ -183,7 +185,20 @@ nnoremap <leader>llb   :call mylib#OpenWindowLog('../Logs/Builds/latest/ProductB
 let &grepprg='rg --vimgrep --ignore-case --follow '
 
 "configure fzf plugin
+" An action can be a reference to a function that processes selected lines
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val, "lnum": 1 }'))
+  copen
+  cc
+endfunction
+
+let g:fzf_action = {
+  \ 'ctrl-q': function('s:build_quickfix_list'),
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
 let g:fzf_layout = { 'window': 'call fzf#vim#with_preview({ "options": ["--layout=reverse", "--info=inline"] })' }
+
 " find files
 nnoremap <leader>ff :Files<cr>
 " find lines in loaded buffers

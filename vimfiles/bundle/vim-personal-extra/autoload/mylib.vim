@@ -34,10 +34,17 @@ function! mylib#OpenWindowLog(logfile)
 	"execute 'edit ' .. a:logfile
 	" Set the file format to unix
 	setlocal fileformat=unix
+	silent try | execute '%s/^##\[error\]//g' | catch /.*/  | finally | endtry
 	" replace <windows drive letter>:\ with \mnt\<lowercase drive letter>\
-	silent try | execute '%s/\([A-Z]\):\\/\\mnt\\\l\1\\/g' | catch /.*/  | finally | endtry
+	silent try | execute '%s/\([A-Za-z]\):\\/\\mnt\\\l\1\\/g' | catch /.*/  | finally | endtry
+	" replace <windows drive letter>:/ with \mnt\<lowercase drive letter>\
+	silent try | execute '%s/\([A-Za-z]\):\//\\mnt\\\l\1\\/g' | catch /.*/  | finally | endtry
 	" replace \ with /
 	silent try | execute '%s/\\/\//g' | catch /.*/ |  finally | endtry
+	" replace /mnt/**/src/ with ./
+	silent try | execute '%s/\/mnt\/\([a-z]\)\/\([a-zA-Z\/]\+\)\/src\//.\//g' | catch /.*/ | finally | endtry
+	" replace /mnt/**/Import/ with ../Import/
+	silent try | execute '%s/\/mnt\/\([a-z]\)\/\([a-zA-Z\/]\+\)\/Import\//..\/Import\//g' | catch /.*/ | finally | endtry
 	" Write the changes to the file
 	silent write
 	" Close the buffer
@@ -45,4 +52,6 @@ function! mylib#OpenWindowLog(logfile)
 	silent execute 'cfile ' .. l:tmpfile
 	botright cwindow 10
 endfunction
+
+
 
