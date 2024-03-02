@@ -12,3 +12,6 @@ molokai
 copilot.vim
 gruvbox
 vimspector
+fzf.vim/
+fzf/
+**/node_modules/
