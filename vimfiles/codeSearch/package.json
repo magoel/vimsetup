@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "reSearch": "node index.js",
+	"pr" : "node add.js",
     "test": "node index.js EidSaveFile --debug"
   },
   "author": "",
