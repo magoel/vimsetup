@@ -37,14 +37,12 @@ function! s:EvalNodePath()
 		if !filereadable(l:nodePath)
 			echom "node is not found at given path " .. l:nodePath
 			echom "Please install node and make sure it is available on system path or at given path"
-			finish
 		endif
 		return l:nodePath
 	else
 		if !executable("node")
 			echom "node is not found on system path"
 			echom "Please install node and make sure it is available on system path or at given path"
-			finish
 		endif
 		return "node"
 	endif
@@ -57,7 +55,6 @@ function! s:EvalResearchAppDir()
 		if !isdirectory(l:reSearchAppDir)
 			echom "reSearchAppDir is not a directory or does not exists " .. l:reSearchAppDir
 			echom "Please install reSearch and make sure it is available on system path or at given path"
-			finish
 		endif
 		return l:reSearchAppDir
 	else
@@ -67,7 +64,6 @@ function! s:EvalResearchAppDir()
 		if l:reSearchAppDir ==# ''
 			echom "reSearchAppDir is not found in current directory or its parent"
 			echom "Please install reSearch and make sure it is available on system path or at given path"
-			finish
 		endif
 		return l:reSearchAppDir
 	endif
@@ -84,7 +80,6 @@ function! s:EnsureReSearchAppDirDependency()
 		if v:shell_error
 			echom "npm install failed at " .. l:reSearchAppDir
 			execute 'cd ' .. l:cwd
-			finish
 		endif
 		execute 'cd ' .. l:cwd
 	endif
