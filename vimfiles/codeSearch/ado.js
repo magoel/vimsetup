@@ -145,7 +145,7 @@ if (argv._.includes('downloadpr') && argv.pullRequestId) {
 			const filepath = threadcontext.filePath;
 			const startLine = threadcontext.rightFileStart?.line ?? 0;
 			const endLine = threadcontext.rightFileEnd?.line ?? 0;
-			console.log(`.${filepath}:${startLine}:${endLine}:(${commentStatus}) --  `);
+			console.log(`.${filepath}:${startLine}:(${commentStatus}) --  `);
 			for (const comment of commentThread?.comments) {
 				const author = comment.author.displayName;
 				const content = comment.content;

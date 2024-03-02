@@ -174,8 +174,6 @@ nnoremap <leader>df :cgetexpr system("git.exe diff --name-only user/mgoel/main..
 "vim errorformat for visual studio
 let &efm = &efm .. "," .. '\ %#%f(%l\\\,%c):\ %m'
 let &efm = &efm .. "," .. '\ %#%f(%l)\ :\ %m'
-" for pull-request comment
-let &efm = &efm .. "," .. '\ %#%f:%l:%e:\ %#%m'
 
 "open visual studio log (load-log)
 nnoremap <leader>llb   :call mylib#OpenWindowLog('../Logs/Builds/latest/ProductBuild/Domino.err')<cr>
