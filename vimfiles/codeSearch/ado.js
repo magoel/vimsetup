@@ -12,8 +12,6 @@ import path from 'path'
 // e.g. node ado.js listpr --project office --status completed
 // e.g. node ado.js listpr --project office --status abandoned
 // e.g. node ado.js listpr --project office --status all
-// e.g. node ado.js listpr --project office --status active --creator "John Doe"
-// e.g. node ado.js listpr --project office --status active --creator "John Doe" --target "main"
 // also provide bash completion
 const argv = yargs(process.argv.slice(2))
 .command('downloadpr', 'Download Pull Request', (yargs) => {
@@ -47,35 +45,27 @@ const argv = yargs(process.argv.slice(2))
 	yargs.option('project', {
 		alias: 'p',
 		describe: 'Project Name',
-		default : 'office',
 		type: 'string',
+		default : 'office',
 	})
 	.option('repository', {
 		alias: 'r',
 		describe: 'repository name',
-		default : 'office',
 		type: 'string',
+		default : 'office',
 	})
 	.option('status', {
 		alias: 's',
 		describe: 'Status of PR',
 		type: 'string',
-		choices: ['active', 'completed', 'abandoned', 'all'],
+		choices: ['active', 'completed', 'abandoned', 'all', "notSet"],
 		default: 'active'
-	})
-	.option('creator', {
-		alias: 'c',
-		describe: 'Creator of PR',
-		type: 'string'
-	})
-	.option('reviewer', {
-		describe: 'Reviewer of PR',
-		type: 'string'
 	})
 	.option('target', {
 		alias: 't',
 		describe: 'Target Branch',
-		type: 'string'
+		type: 'string',
+		default: 'refs/heads/official/word'
 	})
 })
 .example('node $0 downloadpr --project office --status all --pullRequestId 2777289', 'Download all comments for PR 2777289')
@@ -116,6 +106,21 @@ class ADO {
 		const response = await this.request(url);
 		return response.data;
 	}
+
+	// write methods to request all PRs for a project, created by a user, reviewed by a user, with a specific status
+	// and with a specific target branch
+	async getPullRequests(repository, status, target) {
+		const searchCriteria = {
+			maxTime: new Date().toISOString(),
+			// mintime should be 30 days before maxtime
+			minTime: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+			status: status,
+			targetRefName: target
+		};
+		const url = `_apis/git/repositories/${repository}/pullrequests?searchCriteria.maxTime=${searchCriteria.maxTime}&searchCriteria.minTime=${searchCriteria.minTime}&searchCriteria.status=${searchCriteria.status}&searchCriteria.targetRefName=${searchCriteria.targetRefName}&api-version=7.1-preview.1`
+		const response = await this.request(url);
+		return response.data;
+	}
 };
 
 
@@ -151,6 +156,22 @@ if (argv._.includes('downloadpr') && argv.pullRequestId) {
 				const content = comment.content;
 				console.log(`->(${author}): ${content}`);
 			}
+		}
+	})();
+}
+else if (argv._.includes('listpr')) {
+	(async () => {
+		const pullRequests = await ado.getPullRequests(argv.repository, argv.status, argv.target);
+		for (const pr of pullRequests.value) {
+			const title = pr.title;
+			const id = pr.pullRequestId;
+			const creator = pr.createdBy.displayName;
+			const reviewer = pr.reviewers.map(reviewer => reviewer.displayName).join(', ');
+			const status = pr.status;
+			const targetBranch = pr.targetRefName;
+			const age = new Date().getTime() - new Date(pr.creationDate).getTime();
+			const ageInDays = Math.floor(age / (24 * 60 * 60 * 1000));
+			console.log(`${id}: ${title} (${status}) by ${creator} targetBranch: ${targetBranch} age: ${ageInDays} days`);
 		}
 	})();
 }
