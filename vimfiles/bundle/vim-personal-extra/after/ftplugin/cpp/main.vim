@@ -1,3 +1,10 @@
+let s:filename=expand('<sfile>', ':p')
+function! s:ScriptPath()
+	return s:filename
+endfunction
+let s:curFileDir = fnamemodify(s:ScriptPath(),":p:h")
+
+
 setlocal number "show line numbers"
 setlocal wrap  " wrap lines"
 
@@ -69,17 +76,27 @@ noremap <buffer> <localleader>= :call <SID>ClangFormat()<cr>
 "Start Lsp Server
 nnoremap <buffer> <localleader>ls :call <SID>StartLspServerForCpp()<cr>
 
-let s:filename=expand('<sfile>', ':p')
-function! s:ScriptPath()
-	return s:filename
+
+function! s:EvalClangFormatScriptPath()
+	if exists("g:clangFormatPythonScriptPath")
+		let l:clangFormatPythonScriptPath = g:clangFormatPythonScriptPath
+		" check if the file exists
+		if !filereadable(l:clangFormatPythonScriptPath)
+			echom l:clangFormatPythonScriptPath .. " is not a valid file"
+			return ""
+		endif
+		return l:clangFormatPythonScriptPath
+	else
+		let l:clangFormatPythonScriptPath = findfile("clang-format.py", s:curFileDir . ";")
+		if l:clangFormatPythonScriptPath ==# ""
+			echom "clang-format.py not found"
+			return ""
+		endif
+		return l:clangFormatPythonScriptPath
+	endif
 endfunction
 
-
-if exists("g:clangFormatPythonScriptPath")
-    let s:clangFormatPythonScriptPath = g:clangFormatPythonScriptPath
-else
-	let s:clangFormatPythonScriptPath = findfile("~/localInstall/clang-format.py")
-endif
+let s:clangFormatPythonScriptPath = s:EvalClangFormatScriptPath()
 
 function! s:ClangFormat()
 	if s:clangFormatPythonScriptPath !=# ""

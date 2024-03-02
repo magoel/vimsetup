@@ -165,7 +165,6 @@ let g:vimspector_enable_mappings = 'VISUAL_STUDIO'
 
 let g:clang_format_path = "/mnt/e/mgd2off1/Build/OfficeNugetInit/gen/.versionless/microsoft.office.clang-format/bin/clang-format.exe"
 let g:clang_format_fallback_style = "Microsoft"
-let g:clangFormatPythonScriptPath = s:curFileDir . "/clang-format.py"
 
 
 " to open file changed from main-branch in quick-fix list
