@@ -2,6 +2,12 @@ if exists("loaded_reSearch")
     finish
 endif
 
+let s:filename=expand('<sfile>', ':p')
+function! s:ScriptPath()
+	return s:filename
+endfunction
+let s:curFileDir = fnamemodify(s:ScriptPath(),":p:h")
+
 setlocal switchbuf=uselast
 "research mappings
 "rd -- reSearch definition
@@ -55,7 +61,8 @@ function! s:EvalResearchAppDir()
 		endif
 		return l:reSearchAppDir
 	else
-		let l:reSearchAppDir = finddir('codeSearch', '.;')
+		" check in parent path of current file directory
+		let l:reSearchAppDir = finddir('codeSearch', s:curFileDir . ';')
 		" check if l:reSearchAppDir is empty
 		if l:reSearchAppDir ==# ''
 			echom "reSearchAppDir is not found in current directory or its parent"
@@ -68,19 +75,18 @@ endfunction
 
 function! s:EnsureReSearchAppDirDependency()
 	let l:reSearchAppDir = s:EvalResearchAppDir()
-	let l:reSearchAppDir = l:reSearchAppDir .. '/node_modules'
-	if !isdirectory(l:reSearchAppDir)
+	if !isdirectory(l:reSearchAppDir .. '/node_modules')
 		let l:cwd = getcwd()
-		execute 'cd ' . l:reSearchAppDir
+		execute 'cd ' .. l:reSearchAppDir
 		let l:cmd = 'npm install'
 		call system(l:cmd)
 		" check if npm install was successful
 		if v:shell_error
 			echom "npm install failed at " .. l:reSearchAppDir
-			execute 'cd ' . l:cwd
+			execute 'cd ' .. l:cwd
 			finish
 		endif
-		execute 'cd ' . l:cwd
+		execute 'cd ' .. l:cwd
 	endif
 endfunction
 

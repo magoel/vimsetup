@@ -9,3 +9,6 @@ vim-sensible
 vim-slime
 lsp
 molokai
+copilot.vim
+gruvbox
+vimspector
