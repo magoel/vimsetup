@@ -309,9 +309,35 @@ function! s:GetPrComments(prId)
 		botright cwindow 10
 	endif
 endfunction
-
 " define a command which excepts a numeric argument and calls GetPrComments
 command! -nargs=1 PRComments call s:GetPrComments(<f-args>)
+
+function! s:ListPRsSink(lines)
+	let l:prId = matchlist(a:lines, '^\(\d\+\):')[1]
+	let l:prId = str2nr(l:prId)
+	call s:GetPrComments(l:prId)
+endfunction
+
+
+function! s:ListPRs()
+	if !exists('*fzf#wrap')
+		echom "fzf.vim is not available"
+		return
+	endif
+	let l:cmd = s:pullRequestCliCmd .. 
+				\ ' listpr ' ..
+				\ ' --project ' .. s:reSearchProjectName .. 
+				\ ' --repository ' .. s:reSearchRepoName ..
+				\ ' --status active'
+	let wrapped = fzf#wrap({
+				\ 'source':  l:cmd,
+				\ 'sink*':   function('s:ListPRsSink'),
+				\ 'options' : ['--prompt', 'PRs> ']
+			  \ })
+	call fzf#run(wrapped)
+endfunction
+" define a command which calls ListPRs
+command! ListPRs call s:ListPRs()
 
 
 let loaded_reSearch = 1
