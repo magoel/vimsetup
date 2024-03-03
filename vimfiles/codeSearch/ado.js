@@ -153,7 +153,7 @@ if (argv._.includes('downloadpr') && argv.pullRequestId) {
 			console.log(`.${filepath}:${startLine}:(${commentStatus}) --  `);
 			for (const comment of commentThread?.comments) {
 				const author = comment.author.displayName;
-				const content = comment.content;
+				const content = comment.content ?? "~~~failed to fetch comment content~~~";
 				console.log(`->(${author}): ${content}`);
 			}
 		}
