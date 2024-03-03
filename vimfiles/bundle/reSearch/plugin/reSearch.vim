@@ -329,15 +329,15 @@ function! s:ListPRs()
 				\ ' --project ' .. s:reSearchProjectName .. 
 				\ ' --repository ' .. s:reSearchRepoName ..
 				\ ' --status active'
-	let wrapped = fzf#wrap({
+	let opts = fzf#wrap({
 				\ 'source':  l:cmd,
 				\ 'sink*':   function('s:ListPRsSink'),
-				\ 'options' : ['--prompt', 'PRs> ']
-			  \ })
-	call fzf#run(wrapped)
+				\ 'options' : ['--prompt', 'PRs> ', '--ansi', '+m', '-x', '--tiebreak=index']
+				\ })
+	call fzf#run(opts)
 endfunction
 " define a command which calls ListPRs
-command! ListPRs call s:ListPRs()
+command! Pullrequests call s:ListPRs()
 
 
 let loaded_reSearch = 1

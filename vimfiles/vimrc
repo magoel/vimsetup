@@ -214,3 +214,8 @@ nnoremap <leader>fm :Marks<cr>
 nnoremap <leader>fw :Windows<cr>
 " search buffers
 nnoremap <leader>fb :Buffers<cr>
+" search PRs
+nnoremap <leader>fp :Pullrequests<cr>
+
+
+
