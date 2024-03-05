@@ -3,6 +3,7 @@ import getAuth from './Auth.js'
 import axios from 'axios'
 import yargs from 'yargs'
 import path from 'path'
+import chalk from 'chalk'
 
 // create a yargs command line interface to support multiple subcommands e.g. DownloadPR, ListPR etc.
 // and options like project name
@@ -132,6 +133,7 @@ const ado = new ADO('office', argv.project);
 if (argv._.includes('downloadpr') && argv.pullRequestId) {
 	(async () => {
 		const comments = await ado.getComments(argv.repository, argv.pullRequestId);
+		console.log(chalk.yellow(`PR ID: ${argv.pullRequestId}`));
 		// iterate over comments and filter based on status
 		for (const commentThread of comments.value) {
 			const commentStatus = commentThread?.status ?? "unknown";

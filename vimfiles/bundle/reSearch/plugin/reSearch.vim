@@ -294,7 +294,7 @@ function! s:GetPrComments(prId)
 				\ ' --project ' .. s:reSearchProjectName .. 
 				\ ' --repository ' .. s:reSearchRepoName ..
 				\ ' --pullRequestId ' .. l:prId ..
-				\ ' --status active'
+				\ ' --status all'
 	echom 'Executing : ' .. l:cmd
 	let l:qfixtitle = 'PR Comments for ' .. 
 				\ s:reSearchProjectName .. '/' ..
