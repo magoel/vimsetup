@@ -118,7 +118,7 @@ class ADO {
 			status: status,
 			targetRefName: target
 		};
-		const url = `_apis/git/repositories/${repository}/pullrequests?searchCriteria.maxTime=${searchCriteria.maxTime}&searchCriteria.minTime=${searchCriteria.minTime}&searchCriteria.status=${searchCriteria.status}&searchCriteria.targetRefName=${searchCriteria.targetRefName}&api-version=7.1-preview.1`
+		const url = `_apis/git/repositories/${repository}/pullrequests?searchCriteria.maxTime=${searchCriteria.maxTime}&searchCriteria.minTime=${searchCriteria.minTime}&searchCriteria.status=${searchCriteria.status}&searchCriteria.targetRefName=${searchCriteria.targetRefName}&$top=500&api-version=7.1-preview.1`
 		const response = await this.request(url);
 		return response.data;
 	}

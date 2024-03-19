@@ -218,4 +218,5 @@ nnoremap <leader>fb :Buffers<cr>
 nnoremap <leader>fp :Pullrequests<cr>
 
 
-
+" enable pop-up menu to display command argument-choices. User Ctrl+up/Ctrl+down to navigate
+set wildoptions=pum,fuzzy,tagfile
