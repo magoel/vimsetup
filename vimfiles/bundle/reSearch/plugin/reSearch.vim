@@ -340,4 +340,46 @@ endfunction
 command! Pullrequests call s:ListPRs()
 
 
+
+function! s:ListGtagsSink(lines)
+	echom a:lines
+	" check if :Gtags command is available
+	if !exists(':Gtags')
+		echom "Gtags command is not available"
+		return
+	endif
+	" check length of lines
+	if len(a:lines) == 0
+		echom "No lines selected"
+		return
+	endif
+	" let buf = bufnr()
+	" let view = winsaveview()
+	call setqflist([], 'r')
+	for l:line in a:lines
+		echom l:line
+		let l:cmd = 'Gtagsa -r ' .. l:line
+		execute(l:cmd)
+	endfor
+    " call execute('b '.buf)
+    " call winrestview(view)
+endfunction
+
+
+function! s:ListGtags()
+	if !exists('*fzf#wrap')
+		echom "fzf.vim is not available"
+		return
+	endif
+	let l:cmd = 'global -c'
+	let opts = fzf#wrap({
+				\ 'source':  l:cmd,
+				\ 'sink*':   function('s:ListGtagsSink'),
+				\ 'options' : ['--prompt', 'GTags> ', '--ansi', '+m', '-x', '--tiebreak=index']
+				\ })
+	call fzf#run(opts)
+endfunction
+nnoremap  <localleader>gt :call <SID>ListGtags()<CR>
+
+
 let loaded_reSearch = 1
