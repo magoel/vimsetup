@@ -358,8 +358,8 @@ function! s:ListGtagsSink(lines)
 	call setqflist([], 'r')
 	for l:line in a:lines
 		echom l:line
-		let l:cmd = 'Gtagsa -r ' .. l:line
-		execute(l:cmd)
+		execute('Gtagsa -qde ' .. l:line)
+		execute('Gtagsa -qre ' .. l:line)
 	endfor
     " call execute('b '.buf)
     " call winrestview(view)
@@ -375,7 +375,9 @@ function! s:ListGtags()
 	let opts = fzf#wrap({
 				\ 'source':  l:cmd,
 				\ 'sink*':   function('s:ListGtagsSink'),
-				\ 'options' : ['--prompt', 'GTags> ', '--ansi', '+m', '-x', '--tiebreak=index']
+				\ 'options' : ['--prompt', 'GTags> ', '--ansi', '+m', '-x', '--tiebreak=index', '--preview',
+				\	'(global --result=ctags-mod -qde {};global --result=ctags-mod -qre {}) | sed "s/[[:blank:]]/:/;s/[[:blank:]]/:/" | batcat - --color always -l cpp --theme TwoDark',
+				\   '--preview-window', 'right:65%']
 				\ })
 	call fzf#run(opts)
 endfunction
