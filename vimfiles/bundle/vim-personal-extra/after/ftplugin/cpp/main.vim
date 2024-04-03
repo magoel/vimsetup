@@ -50,7 +50,7 @@ nnoremap <buffer> <localleader>uid   :call mylib#InlineCommand("uuidgen")<cr>
 
 
 "Lookup gtags at current cursor contextually
-nnoremap <buffer> <localleader>gr :GtagsCursor<cr>
+nnoremap <buffer> <localleader>gr :call <SID>LookupGtags('<C-R>=expand("<cword>")<CR>')<cr>
 "cscope symbol
 nnoremap <buffer> <localleader>cs :cs find s <C-R>=expand("<cword>")<CR><CR>
 "cscope definition
@@ -133,6 +133,23 @@ function! s:StartLspServerForCpp()
 	endif
 endfunction
 
+function! s:LookupGtags(searchExpr)
+	" check if :Gtags command is available
+	if !exists(':Gtags')
+		echom "Gtags command is not available"
+		return
+	endif
+	" check if the search expression is empty
+	let l:searchExpr = trim(a:searchExpr)
+	if l:searchExpr ==# ""
+		echom "Search expression is empty"
+		return
+	endif
+	call setqflist([], 'r')
+	execute('Gtagsa -qde ' .. l:searchExpr)
+	execute('Gtagsa -qre ' .. l:searchExpr)
+	call setqflist([], 'a', {'title' : 'Gtags ' .. l:searchExpr})
+endfunction
 
 
 " helper files
