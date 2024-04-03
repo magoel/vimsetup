@@ -342,7 +342,6 @@ command! Pullrequests call s:ListPRs()
 
 
 function! s:ListGtagsSink(lines)
-	echom a:lines
 	" check if :Gtags command is available
 	if !exists(':Gtags')
 		echom "Gtags command is not available"
@@ -357,7 +356,6 @@ function! s:ListGtagsSink(lines)
 	" let view = winsaveview()
 	call setqflist([], 'r')
 	for l:line in a:lines
-		echom l:line
 		execute('Gtagsa -qde ' .. l:line)
 		execute('Gtagsa -qre ' .. l:line)
 	endfor
@@ -366,22 +364,41 @@ function! s:ListGtagsSink(lines)
 endfunction
 
 
-function! s:ListGtags()
+let s:global_command = $GTAGSGLOBAL
+if s:global_command == ''
+        let s:global_command = "global"
+endif
+function! s:ListGtags(...)
+	let l:searchexpr = ''
+	" check if first argument is present and of type string
+	" if yes, assign it to searchexpr
+	if len(a:000) > 0 && type(a:000[0]) == type('')
+		let l:searchexpr = trim(a:000[0])
+	endif
 	if !exists('*fzf#wrap')
 		echom "fzf.vim is not available"
 		return
 	endif
-	let l:cmd = 'global -c'
+	if !exists(':Gtags')
+		echom "Gtags command is not available"
+		return
+	endif
+	if !executable(s:global_command)
+		echom s:global_command .. " is not available"
+		return
+	endif
+	let l:cmd = 'global -c '
 	let opts = fzf#wrap({
 				\ 'source':  l:cmd,
 				\ 'sink*':   function('s:ListGtagsSink'),
 				\ 'options' : ['--prompt', 'GTags> ', '--ansi', '+m', '-x', '--tiebreak=index', '--preview',
 				\	'(global --result=ctags-mod -qde {};global --result=ctags-mod -qre {}) | sed "s/[[:blank:]]/:/;s/[[:blank:]]/:/" | batcat - --color always -l cpp --theme TwoDark',
-				\   '--preview-window', 'right:65%']
+				\   '--preview-window', 'right:65%',
+				\   '--query', l:searchexpr]
 				\ })
 	call fzf#run(opts)
 endfunction
-nnoremap  <localleader>gt :call <SID>ListGtags()<CR>
+nnoremap  <localleader>gt :call <SID>ListGtags('<C-R>=expand("<cword>")<CR>')<CR>
 
 
 let loaded_reSearch = 1
