@@ -125,7 +125,7 @@ if exists("g:reSearchBranchName")
 endif
 
 
-let s:reSearchCacheDir = getcwd(-1) .. "/reSearchCache"
+let s:reSearchCacheDir = getcwd(-1) .. "/reSearchCacheDir"
 if exists("g:reSearchCacheDir")
 	let s:reSearchCacheDir  = g:reSearchCacheDir
 endif

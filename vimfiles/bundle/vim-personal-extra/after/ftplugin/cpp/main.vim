@@ -51,6 +51,7 @@ nnoremap <buffer> <localleader>uid   :call mylib#InlineCommand("uuidgen")<cr>
 
 "Lookup gtags at current cursor contextually
 nnoremap <buffer> <localleader>gr :call <SID>LookupGtags('<C-R>=expand("<cword>")<CR>')<cr>
+nnoremap <buffer> <localleader>gf :Gtags -Pi <C-R>=expand("<cword>")<CR><cr>
 "cscope symbol
 nnoremap <buffer> <localleader>cs :cs find s <C-R>=expand("<cword>")<CR><CR>
 "cscope definition
@@ -75,6 +76,14 @@ nnoremap <buffer> <localleader>s :Gtags -f %<cr>
 noremap <buffer> <localleader>= :call <SID>ClangFormat()<cr>
 "Start Lsp Server
 nnoremap <buffer> <localleader>ls :call <SID>StartLspServerForCpp()<cr>
+
+"create a map to do following
+"search 0x to left of cursor
+"then search 2nd / character to right of cursor
+"then select the text between these two points
+"and replace it with UNTAGGED
+nnoremap <buffer> <localleader>ut w?0x<cr>c2f/UNTAGGED<esc>
+" nnoremap <buffer> <localleader>ut :call search('0x', 'b')<cr>:call search('/', 'w')<cr>viw:s/0x.*\//UNTAGGED/<cr>
 
 
 function! s:EvalClangFormatScriptPath()
